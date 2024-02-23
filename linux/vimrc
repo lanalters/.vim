@@ -1,0 +1,878 @@
+"  __  __        __     _____ __  __ ____   ____
+" |  \/  |_   _  \ \   / /_ _|  \/  |  _ \ / ___|
+" | |\/| | | | |  \ \ / / | || |\/| | |_) | |
+" | |  | | |_| |   \ V /  | || |  | |  _ <| |___
+" |_|  |_|\__, |    \_/  |___|_|  |_|_| \_\\____|
+"         |___/
+
+
+
+""""""""""""""""""
+"  editor setup  "
+""""""""""""""""""
+
+
+""""""""""""
+"  system  "
+""""""""""""
+
+" 关闭 vi 兼容模式
+set nocompatible " option.txt
+filetype on
+filetype indent on
+filetype plugin on
+filetype plugin indent on
+set mouse=a
+set encoding=utf-8
+set clipboard=unnamed
+
+" 有些终端可能配色不正常, 需要添加这行
+set termguicolors
+let &t_ut=''
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+
+
+"""""""""""""""""""""""
+"  main code display  "
+"""""""""""""""""""""""
+set number
+set relativenumber
+set cursorline " 光标所在行
+syntax on
+syntax enable
+
+" backup
+set nobackup
+set nowritebackup
+
+"""""""""""""""""""""
+"  editor behavior  "
+"""""""""""""""""""""
+" better tab
+set noautoindent
+set expandtab " 使用空格扩展tab
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set list
+set listchars=tab:▸\ ,trail:▫
+set scrolloff=5
+
+" Prevent auto line split
+set wrap " 确保文字不会超出窗口
+set tw=0
+
+set indentexpr=
+" Better backspace
+set backspace=indent,eol,start
+
+set foldmethod=indent
+set foldlevel=99
+
+let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+
+""""""""""""""""""""""
+"  Window behaviors  "
+""""""""""""""""""""""
+set splitright
+set splitbelow
+
+
+""""""""""""""""""""""""
+"  Status/command bar  "
+""""""""""""""""""""""""
+set laststatus=2
+set autochdir
+set showcmd
+set formatoptions-=tc
+
+" Show command autocomplete
+set wildignore=log/**,node_modules/**,target/**,tmp/**,*.rbc
+set wildmenu                                                 " show a navigable menu for tab completion
+set wildmode=longest,list,full
+
+" Searching options
+set hlsearch
+exec "nohlsearch"
+set incsearch
+set ignorecase
+set smartcase
+
+"""""""""""""""""""""""""""""
+"  Restore Cursor Position  "
+"""""""""""""""""""""""""""""
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+
+
+""""""""""""""""""""
+"  Basic Mappings  "
+""""""""""""""""""""
+
+" Set <LEADER> as <SPACE>
+let mapleader=" "
+
+" Column (:) mods
+map ; :
+map q; q:
+map <LEADER>/ :!
+map <LEADER>r :r !
+map <LEADER>sr :%s/
+
+" Save & quit
+map Q :q<CR>
+map S :w<CR>
+noremap R :source ~/.vim/vimrc<CR>
+
+" Open the vimrc file anytime
+map <LEADER>rc :e ~/.vim/vimrc<CR>
+
+" Undo operations
+noremap l u
+noremap L <C-r>
+" Undo in Insert mode
+inoremap <C-l> <C-u>
+
+" Insert Key
+noremap k i
+noremap K I
+
+" Copy to system clipboard
+" vnoremap Y :w !xclip -i -sel c<CR>
+
+" Search
+map <LEADER><CR> :nohlsearch<CR>
+noremap ( nzz
+noremap ) Nzz
+
+" Duplicate words
+map <LEADER>fd /\(\<\w\+\>\)\_s*\1
+
+" Others
+map <LEADER>o o<Esc>u
+
+
+
+" ===
+" === Cursor Movement
+"
+" ===
+"
+" New cursor movement (the default arrow keys are used for resizing windows)
+"     ^
+"     u
+" < n   i >
+"     e
+"     v
+noremap u k
+noremap n h
+noremap e j
+noremap i l
+" U/E keys for 5 times u/e (faster navigation)
+noremap U 5k
+noremap E 5j
+" N key: go to the start of the line
+noremap N 0
+" I key: go to the end of the line
+noremap I $
+
+" Faster in-line navigation
+noremap W 5w
+noremap B 5b
+" set h (same as n, cursor left) to 'end of word'
+noremap h e
+noremap H ge
+
+" Ctrl + U or E will move up/down the view port without moving the cursor
+noremap <C-U> 5<C-y>
+noremap <C-E> 5<C-e>
+inoremap <C-U> <Esc>5<C-y>a
+inoremap <C-E> <Esc>5<C-e>a
+
+
+
+"""""""""""""""""""""""
+"  Window management  "
+"""""""""""""""""""""""
+
+" Use <space> + new arrow keys for moving the cursor around windows
+map <LEADER>w <C-w>w
+map <LEADER>u <C-w>k
+map <LEADER>e <C-w>j
+map <LEADER>n <C-w>h
+map <LEADER>i <C-w>l
+" xmap <LEADER>r <C-w>r
+
+" Disabling the default s key
+noremap s <nop>
+
+" split the screens to up (horizontal), down (horizontal), left (vertical), right (vertical)
+map su :set nosplitbelow<CR>:split<CR>:set splitbelow<CR>
+map se :set splitbelow<CR>:split<CR>
+map sn :set nosplitright<CR>:vsplit<CR>:set splitright<CR>
+map si :set splitright<CR>:vsplit<CR>
+
+" Resize splits with arrow keys
+map <up> :res +5<CR>
+map <down> :res -5<CR>
+map <left> :vertical resize-5<CR>
+map <right> :vertical resize+5<CR>
+
+" Place the two screens up and down
+noremap sh <C-w>t<C-w>K
+" Place the two screens side by side
+noremap sv <C-w>t<C-w>H
+
+" Rotate screens
+noremap srh <C-w>b<C-w>K
+noremap srv <C-w>b<C-w>H
+
+
+""""""""""""""""""""
+"  Tab management  "
+""""""""""""""""""""
+
+" Create a new tab with tu
+map tu :tabe<CR>
+" Move around tabs with tn and ti
+map tn :-tabnext<CR>
+map ti :+tabnext<CR>
+" Move the tabs with tmn and tmi
+map tmn :-tabmove<CR>
+map tmi :+tabmove<CR>
+
+noremap j "+
+
+
+function g:Undotree_CustomMap()
+    map <buffer> l J
+    map <buffer> L K
+endfunction
+
+
+
+call plug#begin('~/.vim/plugged')
+" vim-easy-align
+Plug 'junegunn/vim-easy-align'
+
+" theme
+Plug 'vim-airline/vim-airline'
+
+Plug 'connorholyday/vim-snazzy'
+
+
+" Markdown
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for' :['markdown', 'vim-plug'] }
+"Plug 'dhruvasagar/vim-table-mode', { 'on': 'TableModeToggle' }
+"Plug 'preservim/vim-markdown'
+
+Plug 'mattn/calendar-vim'
+Plug 'vimwiki/vimwiki'
+
+"" Bookmarks
+"Plug 'kshenoy/vim-signature'
+"
+" Other useful utilities
+"Plug 'terryma/vim-multiple-cursors'
+"Plug 'junegunn/goyo.vim' " distraction free writing mode
+"Plug 'tpope/vim-surround' " type ysks' to wrap the word with '' or type cs'` to change 'word' to `word`
+"Plug 'godlygeek/tabular' " type ;Tabularize /= to align the =
+"Plug 'gcmt/wildfire.vim' " in Visual mode, type i' to select all text in '', or type i) i] i} ip
+"Plug 'scrooloose/nerdcommenter' " in <space>cc to comment a line
+"
+"
+"" File navigation
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+"Plug 'Xuyuanp/nerdtree-git-plugin'
+"
+"" Taglist
+"Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
+"
+"" Error checking
+"Plug 'w0rp/ale'
+"
+"" Auto Complete
+"Plug 'Valloric/YouCompleteMe'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"
+"" Undo Tree
+Plug 'mbbill/undotree/'
+
+"" Other visual enhancement
+"Plug 'nathanaelkane/vim-indent-guides'
+"Plug 'itchyny/vim-cursorword'
+"
+"" Git
+"Plug 'rhysd/conflict-marker.vim'
+"Plug 'tpope/vim-fugitive'
+"Plug 'mhinz/vim-signify'
+"Plug 'gisphm/vim-gitignore', { 'for': ['gitignore', 'vim-plug'] }
+"
+"" HTML, CSS, JavaScript, PHP, JSON, etc.
+"
+"Plug 'elzr/vim-json'
+"Plug 'hail2u/vim-css3-syntax'
+"Plug 'spf13/PIV', { 'for' :['php', 'vim-plug'] }
+"Plug 'gko/vim-coloresque', { 'for': ['vim-plug', 'php', 'html', 'javascript', 'css', 'less'] }
+"Plug 'pangloss/vim-javascript', { 'for' :['javascript', 'vim-plug'] }
+"Plug 'mattn/emmet-vim'
+"
+"" Python
+"Plug 'vim-scripts/indentpython.vim'
+
+"" Dependencies
+"Plug 'MarcWeber/vim-addon-mw-utils'
+"Plug 'kana/vim-textobj-user'
+"Plug 'fadein/vim-FIGlet'
+
+"{{ vimtex
+Plug 'lervag/vimtex'
+
+
+
+" Plug 'xuhdev/vim-latex-live-preview'
+
+
+" snips
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
+
+Plug 'mzlogin/vim-markdown-toc'
+
+
+
+call plug#end()
+
+
+"""""""""""""""""""""
+"  dress up my vim  "
+"""""""""""""""""""""
+
+set termguicolors     " enable true colors support
+colorscheme snazzy
+let g:SnazzyTransparent = 1
+
+let g:lightline = {
+      \     'active': {
+      \         'left': [['mode', 'paste' ], ['readonly', 'filename', 'modified']],
+      \         'right': [['lineinfo'], ['percent'], ['fileformat', 'fileencoding']]
+      \     }
+      \ }
+
+""""""""""""""""""""
+"  vim-easy-align  "
+""""""""""""""""""""
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+
+""""""""""""""
+"  NERDTree  "
+""""""""""""""
+
+map tt :NERDTreeToggle<CR>
+let NERDTreeMapOpenExpl = ""
+let NERDTreeMapUpdir = ""
+let NERDTreeMapUpdirKeepOpen = "l"
+let NERDTreeMapOpenSplit = ""
+let NERDTreeOpenVSplit = ""
+let NERDTreeMapActivateNode = "i"
+let NERDTreeMapOpenInTab = "o"
+let NERDTreeMapPreview = ""
+let NERDTreeMapCloseDir = "n"
+let NERDTreeMapChangeRoot = "y"
+
+" ==
+" == NERDTree-git
+
+" ==
+let g:NERDTreeIndicatorMapCustom = {
+      \ "Modified"  : "✹",
+      \ "Staged"    : "✚",
+      \ "Untracked" : "✭",
+      \ "Renamed"   : "➜",
+      \ "Unmerged"  : "═",
+      \ "Deleted"   : "✖",
+      \ "Dirty"     : "✗",
+      \ "Clean"     : "✔︎",
+      \ "Unknown"   : "?"
+      \ }
+
+"""""""""""""""
+"  undo-tree  "
+"""""""""""""""
+
+nnoremap <F5> :UndotreeToggle<CR>
+
+"let g:undotree_WindowLayout=1
+
+let g:undotree_SetFocusWhenToggle=1
+let g:undotree_DiffAutoOpen=0
+let g:undotree_ShortIndicators=1
+let g:undotree_HighlightChangedText=0
+
+"function g:Undotree_CustomMap()
+"    nmap <buffer> u <plug>UndotreeNextState
+"    nmap <buffer> e <plug>UndotreePreviousState
+"endfunc
+"nmap <buffer> u <plug>UndotreeNextState
+"nmap <buffer> e <plug>UndotreePreviousState
+
+
+set noequalalways
+
+"""""""""""""""""""""
+"  you complete me  "
+"""""""""""""""""""""
+" ===
+" === You Complete ME
+" " ===
+" nnoremap gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+" nnoremap g/ :YcmCompleter GetDoc<CR>
+" nnoremap gt :YcmCompleter GetType<CR>
+" nnoremap gr :YcmCompleter GoToReferences<CR>
+" let g:ycm_autoclose_preview_window_after_completion=0
+" let g:ycm_autoclose_preview_window_after_insertion=1
+" let g:ycm_use_clangd = 0
+" "let g:ycm_python_binary_path = g:ycm_python_interpreter_path
+" "let g:ycm_python_interpreter_path = system('which python3')
+" "let g:ycm_python_binary_path = system('which python3')
+" "let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
+" "let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
+" 
+" " make YCM and ultisnips coincide
+" function! g:UltiSnips_Complete()
+"   call UltiSnips#ExpandSnippet()
+"   if g:ulti_expand_res == 0
+"     if pumvisible()
+"       return "\<C-n>"
+"     else
+"       call UltiSnips#JumpForwards()
+"       if g:ulti_jump_forwards_res == 0
+"         return "\<TAB>"
+"       endif
+"     endif
+"   endif
+"   return ""
+" endfunction
+" 
+" function! g:UltiSnips_Reverse()
+"   call UltiSnips#JumpBackwards()
+"   if g:ulti_jump_backwards_res == 0
+"     return "\<C-P>"
+"   endif
+" 
+"   return ""
+" endfunction
+" 
+" if !exists("g:UltiSnipsJumpForwardTrigger")
+"   let g:UltiSnipsJumpForwardTrigger = "<tab>"
+" endif
+" if !exists("g:UltiSnipsJumpBackwardTrigger")
+"   let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" endif
+" 
+" au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger     . " <C-R>=g:UltiSnips_Complete()<cr>"
+" au InsertEnter * exec "inoremap <silent> " .     g:UltiSnipsJumpBackwardTrigger . " <C-R>=g:UltiSnips_Reverse()<cr>"
+" 
+" let g:UltiSnipsSnippetDirectories=["UltiSnips", "~/.vim/UltiSnips/"]
+" 
+
+""""""""""""""""""
+"  indent-guide  "
+""""""""""""""""""
+
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_color_change_percent = 1
+silent! unmap <LEADER>ig
+autocmd WinEnter * silent! unmap <LEADER>ig
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=NONE ctermbg=NONE
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=NONE ctermbg=NONE
+
+
+"""""""""
+"  ale  "
+"""""""""
+let b:ale_linters = [] "['pylint']
+" let b:ale_fixers = ['autopep8', 'yapf']
+let g:ale_python_pylint_options = "--extension-pkg-whitelist=pygame"
+
+
+"""""""""""""
+"  vimwiki  "
+"""""""""""""
+" 需要设置以下三行，但是已经设置过了
+"set nocompatible
+"filetype plugin on
+"syntax on
+" main command
+
+" Open index file of the [count]'s wiki.
+" [count]<leader>ww
+
+ let g:vimwiki_list=[
+   \ {
+   \ 'automatic_nested_syntaxes':1,
+   \ 'path':'~/vimwiki',
+   \ 'path_html':'~/vimwiki/wiki_html',
+   \ 'template_path': '~/vimwiki/templates/',
+   \ 'syntax' : 'markdown',
+   \ 'ext' : '.md',
+   \ 'template_defalut':'default',
+   \ 'custom_wiki2html': 'wiki2html.sh',
+   \ 'html_filename_parameterization': 1,
+   \ 'template_ext': '.sh',
+   \ },
+   \ {
+   \ 'automatic_nested_syntaxes':1,
+   \ 'path_html':'~/Desktop/file/Learn/go/wiki_html',
+   \ 'path':'~/Desktop/file/Learn/go',
+   \ 'template_defalut':'markdown',
+   \ 'custom_wiki2html':'~/.vim/vimwiki/wiki2html.sh',
+   \ 'template_ext':'.html'},
+   \ {
+   \ 'automatic_nested_syntaxes':1,
+   \ 'path':'~/QuickNote',
+   \ 'path_html':'~/QuickNote/wiki_html',
+   \ 'template_path': '~/vimwiki/templates/',
+   \ 'syntax' : 'markdown',
+   \ 'ext' : '.md',
+   \ 'template_defalut':'default',
+   \ 'custom_wiki2html': 'wiki2html.sh',
+   \ 'html_filename_parameterization': 1,
+   \ 'template_ext': '.sh',
+   \ }
+ \]
+
+"let g:vimwiki_table_mappings = 0
+
+au BufRead,BufNewFile *.md set filetype=vimwiki
+
+let g:taskwiki_sort_order={"C":"pri-"}
+let g:taskwiki_syntax='markdown'
+let g:taskwiki_markdown_syntax='markdown'
+let g:taskwiki_markup_syntax='markdown'
+
+nmap <C-CR> <Plug>VimwikiSplitLink
+
+"""""""""""""""""""""
+"  markdownpreview  "
+"""""""""""""""""""""
+
+" set to 1, nvim will open the preview window after entering the markdown buffer
+" default: 0
+let g:mkdp_auto_start = 0
+let g:mkdp_auto_close = 1
+let g:mkdp_refresh_slow = 0
+
+" set to 1, the MarkdownPreview command can be use for all files,
+" by default it can be use in markdown file
+" default: 0
+let g:mkdp_command_for_global = 0
+
+" set to 1, preview server available to others in your network
+ " by default, the server listens on localhost (127.0.0.1)
+ " default: 0
+ let g:mkdp_open_to_the_world = 0
+
+" use custom IP to open preview page
+" useful when you work in remote vim and preview on local browser
+" more detail see: https://github.com/iamcco/markdown-preview.nvim/pull/9
+" default empty
+let g:mkdp_open_ip = ''
+
+" specify browser to open preview page
+" " default: ''
+let g:mkdp_browser = 'google-chrome-stable'
+"
+" set to 1, echo preview page url in command line when open preview page
+" default is 0
+let g:mkdp_echo_preview_url = 0
+
+" a custom vim function name to open preview page
+" this function will receive url as param
+" default is empty
+let g:mkdp_browserfunc = ''
+""
+
+" options for markdown render
+" mkit: markdown-it options for render
+" katex: katex options for math
+" uml: markdown-it-plantuml options
+" maid: mermaid options
+" disable_sync_scroll: if disable sync scroll, default 0
+" sync_scroll_type: 'middle', 'top' or 'relative', default value is 'middle'
+"   middle: mean the cursor position alway show at the middle of the preview page
+"   top: mean the vim top viewport alway show at the top of the preview page
+"   relative: mean the cursor position alway show at the relative positon of the preview page
+" hide_yaml_meta: if hide yaml metadata, default is 1
+" sequence_diagrams: js-sequence-diagrams options
+" content_editable: if enable content editable for preview page, default: v:false
+" disable_filename: if disable filename header for preview page, default: 0
+let g:mkdp_preview_options = {
+    \ 'mkit': {},
+    \ 'katex': {},
+    \ 'uml': {},
+    \ 'maid': {},
+    \ 'disable_sync_scroll': 0,
+    \ 'sync_scroll_type': 'middle',
+    \ 'hide_yaml_meta': 1,
+    \ 'sequence_diagrams': {},
+    \ 'flowchart_diagrams': {},
+    \ 'content_editable': v:false,
+    \ 'disable_filename': 0
+    \ }
+
+" use a custom markdown style must be absolute path
+" like '/Users/username/markdown.css' or expand('~/markdown.css')
+let g:mkdp_markdown_css = ''
+
+" use a custom highlight style must absolute path
+" like '/Users/username/highlight.css' or expand('~/highlight.css')
+let g:mkdp_highlight_css = ''
+
+" use a custom port to start server or random for empty
+let g:mkdp_port = ''
+
+" preview page title
+" ${name} will be replace with the file name
+let g:mkdp_page_title = '「${name}」'
+
+" recognized filetypes
+" these filetypes will have MarkdownPreview... commands
+let g:mkdp_filetypes = ['markdown']
+
+
+
+""" normal/insert
+"""<Plug>MarkdownPreview
+"""<Plug>MarkdownPreviewStop
+"""<Plug>MarkdownPreviewToggle
+""
+" example
+nmap <F11> :MarkdownPreview<CR>
+"nmap <M-s> <Plug>MarkdownPreviewStop
+"nmap <C-p> <Plug>MarkdownPreviewToggle
+
+
+
+"""""""""""""
+"  vim-tex  "
+"""""""""""""
+filetype plugin on
+" This is necessary for VimTeX to load properly. The "indent" is optional.
+" Note that most plugin managers will do this automatically.
+filetype plugin indent on
+" This enables Vim's and neovim's syntax-related features. Without this, some
+" VimTeX features will not work (see ":help vimtex-requirements" for more
+" info).
+syntax enable
+" Viewer options: One may configure the viewer either by specifying a built-in
+
+let g:vimtex_view_general_viewer = 'okular'
+
+let g:tex_flavor = 'latex'
+
+"let g:vimtex_compiler_progname = 'nvr'
+
+let g:vimtex_quickfix_mode=0
+
+
+" use vimtex as default compiler
+let g:vimtex_compiler_latexmk_engines={'_':'-xelatex'}
+let g:vimtex_compiler_latexrun_engines={'_':'xelatex'}
+
+
+" let g:tex_conceal='abdmg'
+set conceallevel=0
+
+let g:vimtex_compiler_latexmk = {
+	            \ 'build_dir' : {-> 'out'},
+            \ 'executable' : 'latexmk',
+            \ 'options' : [
+	            \   '-lualatex',
+            \   '-file-line-error',
+            \   '-synctex=1',
+            \   '-interaction=nonstopmode',
+            \ ],
+            \}
+
+
+""""""""""""""""""""""""""""
+"  livepreiview_previewer  "
+""""""""""""""""""""""""""""
+
+" let g:livepreview_previewer = 'okular'
+" 
+" let g:livepreview_engine = 'lualatex'
+" 
+" autocmd Filetype tex setl updatetime=100
+" 
+" let g:livepreview_cursorhold_recompile = 0
+" 
+" 
+" nmap <F12> :LLPStartPreview<cr>
+
+
+
+"""""""""
+"  coc  "
+"""""""""
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
+
+" Use <c-i> for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+
+inoremap <silent><expr> <c-e>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "<Tab>" :
+      \ coc#refresh()
+inoremap <expr> <c-u> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <c-o> coc#refresh()
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [d <Plug>(coc-diagnosgic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> H :call ShowDocumentation()<CR>
+
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" coc-snipppets
+
+" Use <C-l> for trigger snippet expand.
+imap <C-n> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-n> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-e>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-u>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+"imap <C-e> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
+""""""""""""""""
+"  translator  "
+""""""""""""""""
+
+" NOTE: do NOT use `nore` mappings
+" popup
+nmap ts <Plug>(coc-translator-p)
+vmap ts <Plug>(coc-translator-pv)
+" echo
+"nmap ts <Plug>(coc-translator-e)
+"vmap ts <Plug>(coc-translator-ev)
+" replace
+"nmap <Leader>r <Plug>(coc-translator-r)
+"vmap <Leader>r <Plug>(coc-translator-rv)
+
+"  editor setup ~10
+"  main code display~35
+"  editor behavior ~40
+
+"  Window behaviors ~77
+
+" Status/command bar
+" Restore Cursor Position 101
+
+" Basic Mappings 108
+" Window management 191
+" Tab management
+" dress up my vim ~ 343
+" NERdTree ~360
+"  vim-indent-guide ~401
+" ale ~415
+
+
+
+
+
+
+function! Thl_test(id,date,...) abort
+  echo get(a:,1,0)
+  echohl error
+  echom expand('<sfile>:h')
+
+  echohl None
+endfunction
+
+function! Thl_test() abort
+endfunction
+
+
+
+
+
+
+
+
+
+
+
